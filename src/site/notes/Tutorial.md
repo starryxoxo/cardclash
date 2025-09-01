@@ -14,5 +14,5 @@
 <button id="spinBtn">Spin!</button>
 <div id="resultDisplay">Spin to win a card!</div>
 
-<script src="https://github.com/starryxoxo/cardclash/src/spin.js"></script>
-<script src="https://github.com/starryxoxo/cardclash/src/maincurrency.js"></script>
+<script src="https://github.com/starryxoxo/cardclash/main/src/spin.js"></script>
+<script src="https://github.com/starryxoxo/cardclash/main/src/maincurrency.js"></script>
