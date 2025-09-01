@@ -4,7 +4,6 @@
 
 # Welcome to Card Clash.
 
-<!-- spin.html snippet for wheel -->
 <div class="spin-wheel-container">
   <div class="spin-wheel" id="spinWheel">
     <!-- Wheel slices will be injected by JS -->
@@ -95,4 +94,4 @@ document.getElementById('spinBtn').addEventListener('click', () => {
   text-shadow: 0 2px 8px #302b63;
   pointer-events: none;
 }
-</script>
+</style>
