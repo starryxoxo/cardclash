@@ -6,9 +6,7 @@
 
 <div class="spin-wheel-container">
   <div class="spin-wheel-border">
-    <div class="spin-wheel" id="spinWheel">
-      <!-- Wheel slices will be injected by JS -->
-    </div>
+    <div class="spin-wheel" id="spinWheel"></div>
     <div class="wheel-pointer"></div>
   </div>
   <button id="spinBtn" class="spin-button">Spin!</button>
