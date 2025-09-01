@@ -65,13 +65,16 @@
 
 .wheel-label {
   position: absolute;
+  width: 80px;
   left: 50%;
-  top: 20%;
-  transform: translate(-50%, 0);
+  top: 50%;
+  transform-origin: 0 0;
   font-size: 1rem;
   color: #fff;
   text-shadow: 0 2px 8px #302b63;
   pointer-events: none;
+  font-weight: bold;
+  text-align: left;
 }
 
 .wheel-pointer {
@@ -134,22 +137,27 @@ function buildWheel(options) {
   const sliceCount = options.length;
   const sliceAngle = 360 / sliceCount;
   options.forEach((opt, i) => {
+    // Slice
     const slice = document.createElement('div');
     slice.className = 'wheel-slice';
     slice.style.background = opt.color;
     slice.style.transform = `rotate(${i * sliceAngle}deg) skewY(${90 - sliceAngle}deg)`;
-
     wheel.appendChild(slice);
 
     // Label
     const label = document.createElement('div');
     label.className = 'wheel-label';
     label.textContent = opt.display;
-    label.style.transform = `rotate(${i * sliceAngle + sliceAngle/2}deg) translate(-50%, 0)`;
+    // Place the label at the edge, rotated so it's readable
+    const angle = i * sliceAngle + sliceAngle / 2;
+    label.style.transform = `
+      rotate(${angle}deg)
+      translate(70px, -10px)
+      rotate(${-angle}deg)
+    `;
     wheel.appendChild(label);
   });
 }
-buildWheel(wheelOptions);
 
 // Spin logic
 let spinning = false;
