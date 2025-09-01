@@ -4,155 +4,95 @@
 
 # Welcome to Card Clash.
 
+<!-- spin.html snippet for wheel -->
 <div class="spin-wheel-container">
-  <div class="wheel">
-    <div id="wheelCanvas"></div>
-    <button id="spinBtn" class="spin-button">Spin!</button>
+  <div class="spin-wheel" id="spinWheel">
+    <!-- Wheel slices will be injected by JS -->
   </div>
+  <button id="spinBtn" class="spin-button">Spin!</button>
   <div class="result-section">
     <span id="resultDisplay" class="result-display">Spin to win a card!</span>
   </div>
 </div>
 
 <script>
-// spin.js
-class SpinWheel {
-    constructor(options) {
-        // Each option: { name, chance, display }
-        this.options = options;
-        this.inventory = null; // To be set by inventory.js
-    }
-
-    setInventory(inventory) {
-        this.inventory = inventory;
-    }
-
-    spin() {
-        const totalChance = this.options.reduce((sum, opt) => sum + opt.chance, 0);
-        let pick = Math.random() * totalChance;
-        for (const opt of this.options) {
-            pick -= opt.chance;
-            if (pick <= 0) {
-                this.addToInventory(opt.name);
-                return opt;
-            }
-        }
-        // fallback (shouldn't reach here)
-        return this.options[this.options.length - 1];
-    }
-
-    addToInventory(itemName) {
-        if (this.inventory) {
-            this.inventory.addItem(itemName);
-        }
-    }
-}
-
-// Example usage:
+// wheelOptions from previous example
 const wheelOptions = [
-    { name: 'Fire Card', chance: 50, display: '🔥 Fire Card' },
-    { name: 'Water Card', chance: 30, display: '💧 Water Card' },
-    { name: 'Ultra Rare Card', chance: 5, display: '✨ Ultra Rare!' },
-    { name: 'Lucky Upgrade', chance: 15, display: '🎲 Upgrade!' }
+  { name: 'Fire Card', chance: 50, display: '🔥 Fire Card', color: '#ff5e57' },
+  { name: 'Water Card', chance: 30, display: '💧 Water Card', color: '#43b9f9' },
+  { name: 'Ultra Rare Card', chance: 5, display: '✨ Ultra Rare!', color: '#e7b3ff' },
+  { name: 'Lucky Upgrade', chance: 15, display: '🎲 Upgrade!', color: '#f9ca24' }
 ];
 
-const spinWheel = new SpinWheel(wheelOptions);
+// Dynamically create wheel slices
+function buildWheel(options) {
+  const wheel = document.getElementById('spinWheel');
+  wheel.innerHTML = '';
+  const sliceCount = options.length;
+  options.forEach((opt, i) => {
+    const slice = document.createElement('div');
+    slice.className = 'wheel-slice';
+    slice.style.setProperty('--slice-color', opt.color);
+    const angle = 360 * i / sliceCount;
+    slice.style.transform = `rotate(${angle}deg)`;
+    const label = document.createElement('div');
+    label.className = 'wheel-label';
+    label.textContent = opt.display;
+    label.style.transform = `rotate(${angle + 360/sliceCount/2}deg) translate(-50%, -110%)`;
+    wheel.appendChild(slice);
+    wheel.appendChild(label);
+  });
+}
+buildWheel(wheelOptions);
 
-// UI hook (example)
+// Animate spin
 document.getElementById('spinBtn').addEventListener('click', () => {
-    const result = spinWheel.spin();
-    document.getElementById('resultDisplay').textContent = result.display;
+  const wheel = document.getElementById('spinWheel');
+  // Randomly decide spin amount
+  const spinDeg = 360 * 5 + Math.floor(Math.random() * 360);
+  wheel.style.transform = `rotate(${spinDeg}deg)`;
+  // You'll want to sync this with your JS spin logic for result!
 });
 </script>
 
 <style>
-.spin-wheel-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  background: linear-gradient(120deg, #24243e 0%, #302b63 50%, #0f0c29 100%);
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-  padding: 40px 20px;
-}
-
-.wheel {
+.spin-wheel {
   position: relative;
-  width: 250px;
-  height: 250px;
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#wheelCanvas {
   width: 220px;
   height: 220px;
   border-radius: 50%;
-  background: #fff9e6;
-  border: 6px solid #5533ff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+  overflow: hidden;
+  margin-bottom: 24px;
+  transition: transform 4s cubic-bezier(.22,.68,.38,.98);
 }
 
-.spin-button {
+.wheel-slice {
   position: absolute;
-  bottom: -40px;
+  width: 50%;
+  height: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  padding: 10px 32px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  background: #5533ff;
+  top: 50%;
+  transform-origin: 0 100%;
+  background: conic-gradient(var(--slice-color) 0 100%);
+  clip-path: polygon(0% 100%, 100% 100%, 100% 0%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: bold;
   color: #fff;
-  border: none;
-  border-radius: 24px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.spin-button:hover {
-  background: #7755ff;
+  pointer-events: none;
 }
 
-.result-section {
-  margin-top: 28px;
-  text-align: center;
-}
-
-.result-display {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #f9ca24;
+.wheel-label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -110%);
+  font-size: 1rem;
+  color: #fff;
   text-shadow: 0 2px 8px #302b63;
-  letter-spacing: 1px;
+  pointer-events: none;
 }
-
-/* Responsive for mobile */
-@media (max-width: 600px) {
-  .spin-wheel-container {
-    min-height: 250px;
-    padding: 20px 5px;
-  }
-  .wheel {
-    width: 180px;
-    height: 180px;
-  }
-  #wheelCanvas {
-    width: 150px;
-    height: 150px;
-    font-size: 1rem;
-  }
-  .spin-button {
-    padding: 8px 18px;
-    font-size: 1rem;
-    bottom: -30px;
-  }
-}
-</style>
+</script>
