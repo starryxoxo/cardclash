@@ -10,10 +10,13 @@ function showLine(index) {
   line.style.display = 'block';
   line.style.opacity = '0';
   line.style.transition = `opacity ${line.dataset.fade || '1s'} ease`;
+  // Use CSS variable for transition if you want
+  line.style.setProperty('--fade', line.dataset.fade || '1s');
   setTimeout(() => {
     line.classList.add('visible');
     line.scrollIntoView({ behavior: "smooth", block: "end" });
   }, 50);
+  document.getElementById('continueBtn').style.display = "block"; // Always show unless finished
 }
 
 function tapContinue() {
