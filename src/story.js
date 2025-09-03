@@ -1,31 +1,53 @@
+// Improved story progression script
+
 const lines = Array.from(document.querySelectorAll('.story-line'));
+const continueBtn = document.getElementById('continueBtn');
 let progress = parseInt(localStorage.getItem('storyProgress') || "0", 10);
+let busy = false; // Prevent double-taps
 
 function showLine(index) {
-  if (index >= lines.length) {
-    document.getElementById('continueBtn').style.display = "none";
-    return;
-  }
+  if (index < 0 || index >= lines.length) return;
   const line = lines[index];
   line.style.display = 'block';
-  line.style.opacity = '0';
-  line.style.transition = `opacity ${line.dataset.fade || '1s'} ease`;
-  // Use CSS variable for transition if you want
-  line.style.setProperty('--fade', line.dataset.fade || '1s');
+  // Use CSS for handling opacity transition
   setTimeout(() => {
     line.classList.add('visible');
     line.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, 50);
-  document.getElementById('continueBtn').style.display = "block"; // Always show unless finished
+  }, 10);
+}
+
+function updateUI() {
+  // Hide all lines
+  lines.forEach((line, i) => {
+    if (i <= progress) {
+      line.style.display = 'block';
+      line.classList.add('visible');
+    } else {
+      line.style.display = 'none';
+      line.classList.remove('visible');
+    }
+  });
+  // Hide button if at end
+  if (progress >= lines.length - 1) {
+    continueBtn.style.display = "none";
+  } else {
+    continueBtn.style.display = "block";
+  }
 }
 
 function tapContinue() {
+  if (busy) return;
+  busy = true;
   progress++;
+  if (progress >= lines.length) progress = lines.length - 1;
   localStorage.setItem('storyProgress', progress);
   showLine(progress);
+  updateUI();
+  setTimeout(() => { busy = false; }, 500); // allow time for animation
 }
 
-lines.forEach(line => line.style.display = 'none'); // Hide all initially
-for (let i = 0; i <= progress && i < lines.length; i++) showLine(i);
+// Initial state: show up to current progress
+updateUI();
 
-document.getElementById('continueBtn').addEventListener('click', tapContinue);
+// Event listener
+continueBtn.addEventListener('click', tapContinue);
