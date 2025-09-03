@@ -169,15 +169,12 @@ body {
 
 .story-line {
   opacity: 0;
-  transition: opacity var(--fade, 1s) ease;
-  margin-bottom: 24px;
-  font-size: 1.2rem;
+  transition: opacity 1s ease;
   display: none;
 }
 
 .story-line.visible {
   opacity: 1;
-  display: block;
 }
 
 .continue-btn {
