@@ -1,3 +1,4 @@
+<script>
 const lines = Array.from(document.querySelectorAll('.story-line'));
 let progress = parseInt(localStorage.getItem('storyProgress') || "0", 10);
 
@@ -29,3 +30,4 @@ lines.forEach(line => line.style.display = 'none'); // Hide all initially
 for (let i = 0; i <= progress && i < lines.length; i++) showLine(i);
 
 document.getElementById('continueBtn').addEventListener('click', tapContinue);
+</script>
