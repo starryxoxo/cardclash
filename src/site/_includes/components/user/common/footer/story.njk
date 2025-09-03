@@ -1,0 +1,41 @@
+<script>
+const lines = Array.from(document.querySelectorAll('.story-line'));
+const continueBtn = document.getElementById('continueBtn');
+let progress = parseInt(localStorage.getItem('storyProgress') || "0", 10);
+
+// Hide all lines initially
+lines.forEach(line => {
+  line.classList.remove('visible');
+  line.style.display = 'none';
+});
+
+// Show all lines up to progress
+function render() {
+  lines.forEach((line, idx) => {
+    if (idx <= progress) {
+      line.style.display = 'block';
+      setTimeout(() => line.classList.add('visible'), 10);
+    } else {
+      line.classList.remove('visible');
+      line.style.display = 'none';
+    }
+  });
+  if (progress >= lines.length - 1) {
+    continueBtn.style.display = 'none';
+  } else {
+    continueBtn.style.display = 'block';
+  }
+}
+
+function tapContinue() {
+  if (progress < lines.length - 1) {
+    progress++;
+    localStorage.setItem('storyProgress', progress);
+    render();
+  }
+}
+</script>
+continueBtn.addEventListener('click', tapContinue);
+
+// Initial render
+render();
