@@ -194,3 +194,8 @@ body {
 .continue-btn:hover {
   opacity: 0.7;
 }
+
+body *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
+  font-family: "Inter Variable", sans-serif;
+  font-size: inherit;
+}
